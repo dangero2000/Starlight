@@ -1,0 +1,117 @@
+{
+	"@metadata": {
+		"authors": [
+			"Starlight Contributors"
+		]
+	},
+	"starlight-desc": "{{desc|name=Starlight|url=https://www.mediawiki.org/wiki/Extension:Starlight}}",
+
+	"starlight-no-reviews": "Message shown when a page has no reviews yet",
+	"starlight-no-ratings": "Message shown in summary when no ratings exist",
+	"starlight-review-count": "Shows the number of reviews. Parameters:\n* $1 - number of reviews",
+	"starlight-rating-aria": "ARIA label for star rating display. Parameters:\n* $1 - the rating value",
+	"starlight-rating-select": "ARIA label for clickable star in rating input. Parameters:\n* $1 - star number",
+	"starlight-star-label": "Label for 'star' unit in rating display",
+
+	"starlight-form-rating": "Label for rating input field",
+	"starlight-form-name": "Label for reviewer name input field",
+	"starlight-form-save-name": "Checkbox label for saving name for future reviews",
+	"starlight-form-experience": "Label for experience description field",
+	"starlight-form-experience-placeholder": "Placeholder text for experience field",
+	"starlight-form-text": "Label for review text textarea",
+	"starlight-form-remember-me": "Checkbox label for saving session cookie",
+	"starlight-form-cookie-explanation": "Explanation of what the cookie does",
+	"starlight-form-submit": "Submit button text",
+
+	"starlight-sort-label": "Label for sort dropdown",
+	"starlight-sort-smart": "Smart/helpful sort option",
+	"starlight-sort-newest": "Newest first sort option",
+	"starlight-sort-oldest": "Oldest first sort option",
+	"starlight-sort-highest": "Highest rated sort option",
+	"starlight-sort-lowest": "Lowest rated sort option",
+	"starlight-sort-verified": "Most verified sort option",
+
+	"starlight-stale-badge": "Badge shown on older reviews",
+	"starlight-stale-tooltip": "Tooltip for stale badge. Parameters:\n* $1 - age in days",
+
+	"starlight-verify-unverified": "Status for reviews without enough verification votes",
+	"starlight-verify-accurate": "Status for highly verified accurate reviews",
+	"starlight-verify-mostly-accurate": "Status for mostly accurate reviews",
+	"starlight-verify-mixed": "Status for reviews with mixed verification",
+	"starlight-verify-mostly-inaccurate": "Status for mostly inaccurate reviews",
+	"starlight-verify-inaccurate": "Status for verified inaccurate reviews",
+	"starlight-verify-count": "Shows verification vote count. Parameters:\n* $1 - number of votes",
+
+	"starlight-verify-btn-true": "Button to verify as completely true",
+	"starlight-verify-btn-mostly-true": "Button to verify as mostly true",
+	"starlight-verify-btn-mixed": "Button to verify as mixed accuracy",
+	"starlight-verify-btn-mostly-false": "Button to verify as mostly false",
+	"starlight-verify-btn-false": "Button to verify as completely false",
+	"starlight-verify-btn-inconclusive": "Button to mark as inconclusive",
+
+	"starlight-action-edit": "Edit button for review",
+	"starlight-action-delete": "Delete button for review",
+	"starlight-action-moderate": "Moderate button for moderators",
+	"starlight-action-flag": "Flag button for reporting reviews",
+
+	"starlight-load-more": "Button to load additional reviews",
+
+	"starlight-error-rating-required": "Error when no rating selected",
+	"starlight-error-invalid-rating": "Error when rating is out of range",
+	"starlight-error-name-required": "Error when name is empty",
+	"starlight-error-name-too-long": "Error when name exceeds limit. Parameters:\n* $1 - maximum length",
+	"starlight-error-experience-required": "Error when experience is empty",
+	"starlight-error-experience-too-long": "Error when experience exceeds limit. Parameters:\n* $1 - maximum length",
+	"starlight-error-text-required": "Error when review text is required but empty",
+	"starlight-error-text-too-short": "Error when review text is too short. Parameters:\n* $1 - minimum length",
+	"starlight-error-text-too-long": "Error when review text exceeds limit. Parameters:\n* $1 - maximum length",
+	"starlight-error-anonymous-disabled": "Error when anonymous reviews are disabled",
+	"starlight-error-rate-limited": "Error when user is rate limited",
+	"starlight-error-review-not-found": "Error when review doesn't exist",
+	"starlight-error-cannot-edit": "Error when user can't edit review",
+	"starlight-error-cannot-delete": "Error when user can't delete review",
+	"starlight-error-no-changes": "Error when edit has no changes",
+	"starlight-error-update-failed": "Error when update fails",
+	"starlight-error-delete-failed": "Error when deletion fails",
+	"starlight-error-login-required": "Error when login is required",
+	"starlight-error-cannot-verify": "Error when user can't verify review",
+	"starlight-error-verify-failed": "Error when verification fails",
+	"starlight-error-cannot-flag-own": "Error when trying to flag own review",
+
+	"starlight-success-submitted": "Success message after submitting review",
+	"starlight-success-updated": "Success message after updating review",
+	"starlight-success-deleted": "Success message after deleting review",
+
+	"starlight-confirm-delete": "Confirmation dialog for deletion",
+
+	"starlight-special-reviews": "Title of Special:Reviews page",
+	"starlight-special-reviews-desc": "Description of Special:Reviews",
+	"starlight-special-manage": "Title of Special:ManageReviews page",
+	"starlight-special-manage-desc": "Description of Special:ManageReviews",
+
+	"right-starlight-submit": "{{doc-right|starlight-submit}}",
+	"right-starlight-verify": "{{doc-right|starlight-verify}}",
+	"right-starlight-moderate": "{{doc-right|starlight-moderate}}",
+	"right-starlight-flag": "{{doc-right|starlight-flag}}",
+	"right-starlight-viewdeleted": "{{doc-right|starlight-viewdeleted}}",
+
+	"action-starlight-submit": "{{doc-action|starlight-submit}}",
+	"action-starlight-verify": "{{doc-action|starlight-verify}}",
+	"action-starlight-moderate": "{{doc-action|starlight-moderate}}",
+	"action-starlight-flag": "{{doc-action|starlight-flag}}",
+	"action-starlight-viewdeleted": "{{doc-action|starlight-viewdeleted}}",
+
+	"apihelp-starlightsubmit-summary": "{{doc-apihelp-summary|starlightsubmit}}",
+	"apihelp-starlightsubmit-example": "{{doc-apihelp-example|starlightsubmit}}",
+	"apihelp-starlightedit-summary": "{{doc-apihelp-summary|starlightedit}}",
+	"apihelp-starlightedit-example": "{{doc-apihelp-example|starlightedit}}",
+	"apihelp-starlightdelete-summary": "{{doc-apihelp-summary|starlightdelete}}",
+	"apihelp-starlightdelete-example": "{{doc-apihelp-example|starlightdelete}}",
+	"apihelp-starlightverify-summary": "{{doc-apihelp-summary|starlightverify}}",
+	"apihelp-starlightverify-example": "{{doc-apihelp-example|starlightverify}}",
+	"apihelp-starlightlist-summary": "{{doc-apihelp-summary|starlightlist}}",
+	"apihelp-starlightlist-example-basic": "{{doc-apihelp-example|starlightlist}}",
+	"apihelp-starlightlist-example-rendered": "{{doc-apihelp-example|starlightlist|2}}",
+	"apihelp-starlightflag-summary": "{{doc-apihelp-summary|starlightflag}}",
+	"apihelp-starlightflag-example": "{{doc-apihelp-example|starlightflag}}"
+}
