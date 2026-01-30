@@ -1,0 +1,364 @@
+/**
+ * Styles for reviews display
+ *
+ * @license AGPL-3.0-or-later
+ */
+
+/* Reviews section container */
+.starlight-reviews-section {
+	margin: 1.5em 0;
+	font-family: inherit;
+}
+
+/* Summary section */
+.starlight-summary {
+	padding: 1em;
+	background: #f8f9fa;
+	border: 1px solid #a2a9b1;
+	border-radius: 4px;
+	margin-bottom: 1em;
+}
+
+.starlight-avg-rating {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-left: 0.5em;
+}
+
+.starlight-review-count {
+	color: #54595d;
+	margin-left: 0.5em;
+}
+
+/* Star rating display */
+.starlight-stars {
+	display: inline-block;
+	font-size: 1.2em;
+	letter-spacing: 2px;
+}
+
+.starlight-star {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	margin-right: 2px;
+}
+
+.starlight-star-full::before {
+	content: '★';
+	color: #fc3;
+}
+
+.starlight-star-half::before {
+	content: '★';
+	color: #fc3;
+	background: linear-gradient(90deg, #fc3 50%, #a2a9b1 50%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.starlight-star-empty::before {
+	content: '☆';
+	color: #a2a9b1;
+}
+
+/* Rating distribution */
+.starlight-distribution {
+	margin-top: 1em;
+}
+
+.starlight-distribution-row {
+	display: flex;
+	align-items: center;
+	margin: 4px 0;
+}
+
+.starlight-distribution-label {
+	width: 50px;
+	font-size: 0.9em;
+}
+
+.starlight-distribution-bar-container {
+	flex: 1;
+	height: 8px;
+	background: #eaecf0;
+	border-radius: 4px;
+	margin: 0 8px;
+	overflow: hidden;
+}
+
+.starlight-distribution-bar {
+	display: block;
+	height: 100%;
+	background: #fc3;
+	border-radius: 4px;
+	transition: width 0.3s ease;
+}
+
+.starlight-distribution-count {
+	width: 30px;
+	text-align: right;
+	font-size: 0.9em;
+	color: #54595d;
+}
+
+/* Sort controls */
+.starlight-sort-controls {
+	margin: 1em 0;
+}
+
+.starlight-sort-controls label {
+	margin-right: 0.5em;
+}
+
+.starlight-sort-select {
+	padding: 4px 8px;
+	border: 1px solid #a2a9b1;
+	border-radius: 4px;
+}
+
+/* Reviews list */
+.starlight-reviews-list {
+	position: relative;
+}
+
+.starlight-reviews-list.starlight-loading::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(255, 255, 255, 0.7);
+}
+
+.starlight-no-reviews {
+	color: #54595d;
+	font-style: italic;
+	padding: 1em 0;
+}
+
+/* Individual review */
+.starlight-review {
+	padding: 1em;
+	border: 1px solid #c8ccd1;
+	border-radius: 4px;
+	margin-bottom: 1em;
+	background: #fff;
+}
+
+.starlight-review-collapsed .starlight-review-text {
+	max-height: 3em;
+	overflow: hidden;
+	position: relative;
+}
+
+.starlight-review-collapsed .starlight-review-text::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 1.5em;
+	background: linear-gradient(transparent, #fff);
+}
+
+.starlight-review-stale {
+	border-color: #eaecf0;
+	background: #fafafa;
+}
+
+/* Review header */
+.starlight-review-header {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.starlight-reviewer-name {
+	font-weight: bold;
+}
+
+.starlight-review-date {
+	color: #72777d;
+	font-size: 0.9em;
+}
+
+.starlight-stale-badge {
+	display: inline-block;
+	padding: 2px 6px;
+	font-size: 0.75em;
+	background: #fee7e6;
+	color: #d33;
+	border-radius: 3px;
+}
+
+/* Review content */
+.starlight-review-experience {
+	color: #54595d;
+	font-size: 0.9em;
+	margin-bottom: 0.5em;
+}
+
+.starlight-review-text {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+/* Verification section */
+.starlight-verification {
+	margin-top: 1em;
+	padding-top: 0.5em;
+	border-top: 1px solid #eaecf0;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.5em;
+}
+
+.starlight-verify-status {
+	display: inline-block;
+	padding: 2px 8px;
+	font-size: 0.85em;
+	border-radius: 3px;
+}
+
+.starlight-verify-status-unverified {
+	background: #eaecf0;
+	color: #54595d;
+}
+
+.starlight-verify-status-accurate {
+	background: #d5ffd5;
+	color: #14866d;
+}
+
+.starlight-verify-status-mostly-accurate {
+	background: #e6ffe6;
+	color: #2a6a2a;
+}
+
+.starlight-verify-status-mixed {
+	background: #fef6e7;
+	color: #ac6600;
+}
+
+.starlight-verify-status-mostly-inaccurate {
+	background: #ffece6;
+	color: #a64d00;
+}
+
+.starlight-verify-status-inaccurate {
+	background: #fee7e6;
+	color: #d33;
+}
+
+.starlight-verify-count {
+	font-size: 0.85em;
+	color: #72777d;
+}
+
+/* Verification buttons */
+.starlight-verify-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-left: auto;
+}
+
+.starlight-verify-btn {
+	padding: 4px 8px;
+	font-size: 0.8em;
+	border: 1px solid #a2a9b1;
+	border-radius: 3px;
+	background: #fff;
+	cursor: pointer;
+	transition: all 0.15s;
+}
+
+.starlight-verify-btn:hover {
+	background: #f8f9fa;
+}
+
+.starlight-verify-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.starlight-verify-btn-selected {
+	border-color: #36c;
+	background: #eaf3ff;
+}
+
+.starlight-verify-btn-true {
+	border-color: #14866d;
+}
+
+.starlight-verify-btn-true.starlight-verify-btn-selected {
+	background: #d5ffd5;
+}
+
+.starlight-verify-btn-false {
+	border-color: #d33;
+}
+
+.starlight-verify-btn-false.starlight-verify-btn-selected {
+	background: #fee7e6;
+}
+
+.starlight-verify-confirmation {
+	color: #14866d;
+	font-weight: bold;
+	display: none;
+}
+
+/* Review actions */
+.starlight-review-actions {
+	margin-top: 0.5em;
+	display: flex;
+	gap: 0.5em;
+}
+
+.starlight-review-actions button {
+	padding: 4px 8px;
+	font-size: 0.85em;
+	border: 1px solid #a2a9b1;
+	border-radius: 3px;
+	background: #fff;
+	cursor: pointer;
+}
+
+.starlight-review-actions button:hover {
+	background: #f8f9fa;
+}
+
+.starlight-action-delete:hover {
+	border-color: #d33;
+	color: #d33;
+}
+
+/* Pagination */
+.starlight-pagination {
+	text-align: center;
+	margin: 1em 0;
+}
+
+.starlight-load-more {
+	padding: 8px 16px;
+	border: 1px solid #a2a9b1;
+	border-radius: 4px;
+	background: #f8f9fa;
+	cursor: pointer;
+}
+
+.starlight-load-more:hover {
+	background: #eaecf0;
+}
+
+.starlight-load-more:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
