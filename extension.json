@@ -1,0 +1,452 @@
+{
+	"name": "Starlight",
+	"version": "0.1.0",
+	"author": [
+		"Garrett"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Starlight",
+	"descriptionmsg": "starlight-desc",
+	"license-name": "AGPL-3.0-or-later",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.41.0",
+		"platform": {
+			"php": ">= 8.1"
+		}
+	},
+
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\Starlight\\": "src/"
+	},
+
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\Starlight\\Hooks\\MainHooks"
+		},
+		"parser": {
+			"class": "MediaWiki\\Extension\\Starlight\\Hooks\\ParserHooks",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.ReviewFormatter"
+			]
+		},
+		"schema": {
+			"class": "MediaWiki\\Extension\\Starlight\\Hooks\\SchemaHooks"
+		}
+	},
+
+	"Hooks": {
+		"ParserFirstCallInit": "parser",
+		"LoadExtensionSchemaUpdates": "schema",
+		"BeforePageDisplay": "main"
+	},
+
+	"APIModules": {
+		"starlightsubmit": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewSubmit",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.ReviewValidator",
+				"Starlight.SessionManager"
+			]
+		},
+		"starlightedit": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewEdit",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.ReviewValidator",
+				"Starlight.SessionManager"
+			]
+		},
+		"starlightdelete": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewDelete",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.SessionManager"
+			]
+		},
+		"starlightmoderate": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewModerate",
+			"services": [
+				"Starlight.ReviewStore"
+			]
+		},
+		"starlightclaim": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewClaim",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.SessionManager"
+			]
+		},
+		"starlightverify": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewVerify",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.VerificationStore"
+			]
+		},
+		"starlightoutdated": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewOutdated",
+			"services": [
+				"Starlight.ReviewStore"
+			]
+		}
+	},
+
+	"APIMetaModules": {
+		"starlightdefaultname": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiQueryDefaultName",
+			"services": [
+				"Starlight.NameGenerator",
+				"Starlight.SessionManager"
+			]
+		}
+	},
+
+	"APIListModules": {
+		"starlightreviews": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiQueryReviews",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.ReviewSorter"
+			]
+		}
+	},
+
+	"SpecialPages": {
+		"Reviews": {
+			"class": "MediaWiki\\Extension\\Starlight\\Special\\SpecialReviews",
+			"services": [
+				"Starlight.ReviewStore",
+				"Starlight.ReviewFormatter"
+			]
+		},
+		"ManageReviews": {
+			"class": "MediaWiki\\Extension\\Starlight\\Special\\SpecialManageReviews",
+			"services": [
+				"Starlight.ReviewStore"
+			]
+		}
+	},
+
+	"ServiceWiringFiles": [
+		"src/ServiceWiring.php"
+	],
+
+	"MessagesDirs": {
+		"Starlight": [
+			"i18n"
+		]
+	},
+
+	"ExtensionMessagesFiles": {
+		"StarlightAlias": "Starlight.alias.php"
+	},
+
+	"AvailableRights": [
+		"starlight-review",
+		"starlight-edit-own",
+		"starlight-edit-all",
+		"starlight-delete-own",
+		"starlight-delete-all",
+		"starlight-moderate",
+		"starlight-view-deleted",
+		"starlight-view-ip",
+		"starlight-verify",
+		"starlight-verify-override"
+	],
+
+	"GroupPermissions": {
+		"*": {
+			"starlight-review": true,
+			"starlight-edit-own": false,
+			"starlight-delete-own": false,
+			"starlight-verify": false
+		},
+		"user": {
+			"starlight-review": true,
+			"starlight-edit-own": true,
+			"starlight-delete-own": true,
+			"starlight-verify": true
+		},
+		"autoconfirmed": {
+			"starlight-review": true,
+			"starlight-edit-own": true,
+			"starlight-delete-own": true,
+			"starlight-verify": true
+		},
+		"sysop": {
+			"starlight-review": true,
+			"starlight-edit-all": true,
+			"starlight-delete-all": true,
+			"starlight-moderate": true,
+			"starlight-view-deleted": true,
+			"starlight-verify": true,
+			"starlight-verify-override": true
+		},
+		"bureaucrat": {
+			"starlight-view-ip": true
+		}
+	},
+
+	"ResourceModules": {
+		"ext.starlight.reviews": {
+			"scripts": [
+				"ext.starlight.reviews.js"
+			],
+			"dependencies": [
+				"mediawiki.api",
+				"mediawiki.user"
+			],
+			"messages": [
+				"starlight-verify-success",
+				"starlight-verify-changed",
+				"starlight-verify-removed",
+				"starlight-verify-hint",
+				"starlight-outdated-flagged",
+				"starlight-outdated-unflagged"
+			]
+		},
+		"ext.starlight.reviews.styles": {
+			"styles": [
+				"ext.starlight.reviews.css"
+			]
+		},
+		"ext.starlight.form": {
+			"scripts": [
+				"ext.starlight.form.js"
+			],
+			"dependencies": [
+				"mediawiki.api",
+				"mediawiki.user",
+				"oojs-ui-core"
+			],
+			"messages": [
+				"starlight-form-name-help",
+				"starlight-form-name-help-loggedin",
+				"starlight-error-ratelimited"
+			]
+		},
+		"ext.starlight.form.styles": {
+			"styles": [
+				"ext.starlight.form.css"
+			]
+		},
+		"ext.starlight.verify": {
+			"scripts": [
+				"ext.starlight.verify.js"
+			],
+			"dependencies": [
+				"mediawiki.api"
+			],
+			"messages": [
+				"starlight-verify-true",
+				"starlight-verify-mostly-true",
+				"starlight-verify-mixed",
+				"starlight-verify-mostly-false",
+				"starlight-verify-false",
+				"starlight-verify-inconclusive",
+				"starlight-verify-success",
+				"starlight-verify-changed",
+				"starlight-verify-removed",
+				"starlight-verify-login-required"
+			]
+		}
+	},
+
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "Starlight/modules"
+	},
+
+	"config": {
+		"StarlightEnabled": {
+			"description": "Enable the Starlight reviews system",
+			"value": true,
+			"public": true
+		},
+		"StarlightAllowAnonymous": {
+			"description": "Allow anonymous users to submit reviews",
+			"value": true,
+			"public": true
+		},
+		"StarlightRequireReviewText": {
+			"description": "Require review text (not just rating)",
+			"value": true,
+			"public": true
+		},
+		"StarlightMaxNameLength": {
+			"description": "Maximum length of reviewer name",
+			"value": 50,
+			"public": true
+		},
+		"StarlightMaxExperienceLength": {
+			"description": "Maximum length of experience field",
+			"value": 200,
+			"public": true
+		},
+		"StarlightMaxReviewLength": {
+			"description": "Maximum length of review text",
+			"value": 2000,
+			"public": true
+		},
+		"StarlightMinReviewLength": {
+			"description": "Minimum length of review text (if required)",
+			"value": 10,
+			"public": true
+		},
+		"StarlightRateLimitPerHour": {
+			"description": "Maximum reviews per user per hour",
+			"value": 5,
+			"public": false
+		},
+		"StarlightRateLimitPerDay": {
+			"description": "Maximum reviews per user per day",
+			"value": 20,
+			"public": false
+		},
+		"StarlightLinkPolicy": {
+			"description": "How to handle links: 'allow', 'strip', 'internal-only'",
+			"value": "strip",
+			"public": true
+		},
+		"StarlightAllowedLinkDomains": {
+			"description": "Allowed external domains when link policy is 'whitelist'",
+			"value": [],
+			"public": false
+		},
+		"StarlightModerationRequired": {
+			"description": "Require moderator approval before reviews are visible",
+			"value": false,
+			"public": true
+		},
+		"StarlightEnableAbuseFilter": {
+			"description": "Check reviews against AbuseFilter rules",
+			"value": true,
+			"public": false
+		},
+		"StarlightDefaultSort": {
+			"description": "Default sort order: 'smart', 'newest', 'oldest', 'highest-rating', 'lowest-rating', 'most-verified', 'most-disputed'",
+			"value": "smart",
+			"public": true
+		},
+		"StarlightSortVerificationWeight": {
+			"description": "Weight for verification score in smart sort (0-1)",
+			"value": 0.5,
+			"public": false
+		},
+		"StarlightSortRecencyWeight": {
+			"description": "Weight for recency in smart sort (0-1)",
+			"value": 0.3,
+			"public": false
+		},
+		"StarlightSortConfidenceWeight": {
+			"description": "Bonus weight for well-verified reviews (0-1)",
+			"value": 0.2,
+			"public": false
+		},
+		"StarlightSortRecencyHalfLife": {
+			"description": "Days until recency score drops to 50%",
+			"value": 30,
+			"public": false
+		},
+		"StarlightSortConfidenceThreshold": {
+			"description": "Number of verification votes for full confidence bonus",
+			"value": 10,
+			"public": false
+		},
+		"StarlightStaleThresholdDays": {
+			"description": "Days after which a review is considered potentially stale",
+			"value": 365,
+			"public": true
+		},
+		"StarlightStalePenalty": {
+			"description": "Sort score multiplier for stale reviews (0-1)",
+			"value": 0.3,
+			"public": false
+		},
+		"StarlightOutdatedThreshold": {
+			"description": "Number of 'outdated' flags before review is marked as outdated",
+			"value": 3,
+			"public": false
+		},
+		"StarlightVerificationDecayEnabled": {
+			"description": "Whether verification votes lose weight on old reviews",
+			"value": true,
+			"public": false
+		},
+		"StarlightDefaultCollapsed": {
+			"description": "Whether reviews section is collapsed by default",
+			"value": true,
+			"public": true
+		},
+		"StarlightReviewsPerPage": {
+			"description": "Number of reviews to show per page",
+			"value": 10,
+			"public": true
+		},
+		"StarlightExcludedNamespaces": {
+			"description": "Namespaces where reviews are disabled",
+			"value": [ 2, 3, 4, 5, 8, 9 ],
+			"public": true
+		},
+		"StarlightVerificationRequireAccount": {
+			"description": "Require logged-in account to verify reviews",
+			"value": true,
+			"public": true
+		},
+		"StarlightVerificationRequireAutoconfirmed": {
+			"description": "Require autoconfirmed status to verify reviews",
+			"value": false,
+			"public": true
+		},
+		"StarlightVerificationMinAccountAge": {
+			"description": "Minimum account age in days to verify (0 = no minimum)",
+			"value": 0,
+			"public": false
+		},
+		"StarlightVerificationMinEditCount": {
+			"description": "Minimum edit count to verify (0 = no minimum)",
+			"value": 0,
+			"public": false
+		},
+		"StarlightVerificationRateLimitPerHour": {
+			"description": "Maximum verifications per user per hour",
+			"value": 20,
+			"public": false
+		},
+		"StarlightVerificationRateLimitPerDay": {
+			"description": "Maximum verifications per user per day",
+			"value": 100,
+			"public": false
+		},
+		"StarlightVerificationWeighting": {
+			"description": "Enable weighted voting based on user trust level",
+			"value": false,
+			"public": false
+		},
+		"StarlightVerificationWeights": {
+			"description": "Vote weight multipliers by user group",
+			"value": {
+				"user": 1.0,
+				"autoconfirmed": 1.5,
+				"extendedconfirmed": 2.0,
+				"sysop": 3.0
+			},
+			"public": false
+		},
+		"StarlightVerificationHideCountsUntilThreshold": {
+			"description": "Hide vote counts until minimum votes reached",
+			"value": 5,
+			"public": true
+		},
+		"StarlightVerificationHideCountsUntilAge": {
+			"description": "Hide vote counts until review is this many hours old (0 = show immediately)",
+			"value": 24,
+			"public": true
+		}
+	},
+
+
+	"manifest_version": 2
+}

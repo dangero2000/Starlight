@@ -1,0 +1,47 @@
+# Claude Code
+.claude/
+
+# IDE and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# PHP
+/vendor/
+composer.lock
+*.phar
+
+# Node.js (if using for build tools)
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Testing
+/coverage/
+.phpunit.result.cache
+.phpunit.cache/
+
+# Build artifacts
+/build/
+/dist/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.cache
+
+# Local configuration overrides
+LocalSettings.php
+*.local.php
