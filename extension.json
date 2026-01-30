@@ -47,7 +47,8 @@
 			"services": [
 				"Starlight.ReviewStore",
 				"Starlight.ReviewValidator",
-				"Starlight.SessionManager"
+				"Starlight.SessionManager",
+				"Starlight.NameGenerator"
 			]
 		},
 		"starlightedit": {
@@ -65,50 +66,25 @@
 				"Starlight.SessionManager"
 			]
 		},
-		"starlightmoderate": {
-			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewModerate",
-			"services": [
-				"Starlight.ReviewStore"
-			]
-		},
-		"starlightclaim": {
-			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewClaim",
-			"services": [
-				"Starlight.ReviewStore",
-				"Starlight.SessionManager"
-			]
-		},
 		"starlightverify": {
 			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewVerify",
 			"services": [
-				"Starlight.ReviewStore",
 				"Starlight.VerificationStore"
 			]
 		},
-		"starlightoutdated": {
-			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewOutdated",
-			"services": [
-				"Starlight.ReviewStore"
-			]
-		}
-	},
-
-	"APIMetaModules": {
-		"starlightdefaultname": {
-			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiQueryDefaultName",
-			"services": [
-				"Starlight.NameGenerator",
-				"Starlight.SessionManager"
-			]
-		}
-	},
-
-	"APIListModules": {
-		"starlightreviews": {
-			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiQueryReviews",
+		"starlightlist": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewList",
 			"services": [
 				"Starlight.ReviewStore",
-				"Starlight.ReviewSorter"
+				"Starlight.ReviewFormatter",
+				"Starlight.VerificationStore",
+				"Starlight.SessionManager"
+			]
+		},
+		"starlightflag": {
+			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewFlag",
+			"services": [
+				"Starlight.ReviewStore"
 			]
 		}
 	},
@@ -144,48 +120,35 @@
 	},
 
 	"AvailableRights": [
-		"starlight-review",
-		"starlight-edit-own",
-		"starlight-edit-all",
-		"starlight-delete-own",
-		"starlight-delete-all",
-		"starlight-moderate",
-		"starlight-view-deleted",
-		"starlight-view-ip",
+		"starlight-submit",
 		"starlight-verify",
-		"starlight-verify-override"
+		"starlight-moderate",
+		"starlight-flag",
+		"starlight-viewdeleted"
 	],
 
 	"GroupPermissions": {
 		"*": {
-			"starlight-review": true,
-			"starlight-edit-own": false,
-			"starlight-delete-own": false,
+			"starlight-submit": true,
+			"starlight-flag": false,
 			"starlight-verify": false
 		},
 		"user": {
-			"starlight-review": true,
-			"starlight-edit-own": true,
-			"starlight-delete-own": true,
+			"starlight-submit": true,
+			"starlight-flag": true,
 			"starlight-verify": true
 		},
 		"autoconfirmed": {
-			"starlight-review": true,
-			"starlight-edit-own": true,
-			"starlight-delete-own": true,
+			"starlight-submit": true,
+			"starlight-flag": true,
 			"starlight-verify": true
 		},
 		"sysop": {
-			"starlight-review": true,
-			"starlight-edit-all": true,
-			"starlight-delete-all": true,
-			"starlight-moderate": true,
-			"starlight-view-deleted": true,
+			"starlight-submit": true,
+			"starlight-flag": true,
 			"starlight-verify": true,
-			"starlight-verify-override": true
-		},
-		"bureaucrat": {
-			"starlight-view-ip": true
+			"starlight-moderate": true,
+			"starlight-viewdeleted": true
 		}
 	},
 
@@ -196,20 +159,19 @@
 			],
 			"dependencies": [
 				"mediawiki.api",
-				"mediawiki.user"
+				"mediawiki.user",
+				"oojs-ui-windows"
 			],
 			"messages": [
-				"starlight-verify-success",
-				"starlight-verify-changed",
-				"starlight-verify-removed",
-				"starlight-verify-hint",
-				"starlight-outdated-flagged",
-				"starlight-outdated-unflagged"
+				"starlight-confirm-delete",
+				"starlight-success-deleted",
+				"starlight-error-delete-failed",
+				"starlight-error-loading"
 			]
 		},
 		"ext.starlight.reviews.styles": {
 			"styles": [
-				"ext.starlight.reviews.css"
+				"ext.starlight.reviews.styles.css"
 			]
 		},
 		"ext.starlight.form": {
@@ -222,14 +184,16 @@
 				"oojs-ui-core"
 			],
 			"messages": [
-				"starlight-form-name-help",
-				"starlight-form-name-help-loggedin",
-				"starlight-error-ratelimited"
+				"starlight-error-rating-required",
+				"starlight-error-name-required",
+				"starlight-error-experience-required",
+				"starlight-success-submitted",
+				"starlight-error-submit-failed"
 			]
 		},
 		"ext.starlight.form.styles": {
 			"styles": [
-				"ext.starlight.form.css"
+				"ext.starlight.form.styles.css"
 			]
 		},
 		"ext.starlight.verify": {
@@ -240,16 +204,7 @@
 				"mediawiki.api"
 			],
 			"messages": [
-				"starlight-verify-true",
-				"starlight-verify-mostly-true",
-				"starlight-verify-mixed",
-				"starlight-verify-mostly-false",
-				"starlight-verify-false",
-				"starlight-verify-inconclusive",
-				"starlight-verify-success",
-				"starlight-verify-changed",
-				"starlight-verify-removed",
-				"starlight-verify-login-required"
+				"starlight-error-verify-failed"
 			]
 		}
 	},
