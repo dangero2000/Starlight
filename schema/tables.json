@@ -1,0 +1,361 @@
+[
+	{
+		"name": "starlight_review",
+		"comment": "Stores user reviews for wiki pages",
+		"columns": [
+			{
+				"name": "sr_id",
+				"type": "integer",
+				"options": { "autoincrement": true, "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "sr_page_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "sr_user_id",
+				"type": "integer",
+				"options": { "notnull": false, "unsigned": true }
+			},
+			{
+				"name": "sr_session_token",
+				"type": "string",
+				"options": { "length": 64, "notnull": false }
+			},
+			{
+				"name": "sr_reviewer_name",
+				"type": "string",
+				"options": { "length": 50, "notnull": true }
+			},
+			{
+				"name": "sr_rating",
+				"type": "smallint",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "sr_experience",
+				"type": "string",
+				"options": { "length": 200, "notnull": false }
+			},
+			{
+				"name": "sr_review_text",
+				"type": "text",
+				"options": { "notnull": false, "length": 65535 }
+			},
+			{
+				"name": "sr_timestamp",
+				"type": "mwtimestamp",
+				"options": { "notnull": true }
+			},
+			{
+				"name": "sr_modified",
+				"type": "mwtimestamp",
+				"options": { "notnull": true }
+			},
+			{
+				"name": "sr_status",
+				"type": "string",
+				"options": { "length": 16, "notnull": true, "default": "active" }
+			},
+			{
+				"name": "sr_ip_hash",
+				"type": "string",
+				"options": { "length": 64, "notnull": false }
+			},
+			{
+				"name": "sr_flags",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_verify_true",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_verify_mostly_true",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_verify_mixed",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_verify_mostly_false",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_verify_false",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_verify_inconclusive",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_verify_score",
+				"type": "decimal",
+				"options": { "notnull": true, "default": 0, "precision": 5, "scale": 2 }
+			},
+			{
+				"name": "sr_verify_locked",
+				"type": "smallint",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sr_sort_score",
+				"type": "decimal",
+				"options": { "notnull": true, "default": 0, "precision": 5, "scale": 4 }
+			},
+			{
+				"name": "sr_outdated_count",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			}
+		],
+		"indexes": [
+			{
+				"name": "sr_page",
+				"columns": [ "sr_page_id" ],
+				"unique": false
+			},
+			{
+				"name": "sr_user",
+				"columns": [ "sr_user_id" ],
+				"unique": false
+			},
+			{
+				"name": "sr_session",
+				"columns": [ "sr_session_token" ],
+				"unique": false
+			},
+			{
+				"name": "sr_page_status_time",
+				"columns": [ "sr_page_id", "sr_status", "sr_timestamp" ],
+				"unique": false
+			},
+			{
+				"name": "sr_page_status_sort",
+				"columns": [ "sr_page_id", "sr_status", "sr_sort_score" ],
+				"unique": false
+			},
+			{
+				"name": "sr_ip",
+				"columns": [ "sr_ip_hash" ],
+				"unique": false
+			}
+		],
+		"pk": [ "sr_id" ]
+	},
+	{
+		"name": "starlight_review_log",
+		"comment": "Audit log for review moderation actions",
+		"columns": [
+			{
+				"name": "srl_id",
+				"type": "integer",
+				"options": { "autoincrement": true, "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "srl_review_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "srl_actor_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "srl_action",
+				"type": "string",
+				"options": { "length": 32, "notnull": true }
+			},
+			{
+				"name": "srl_reason",
+				"type": "string",
+				"options": { "length": 500, "notnull": false }
+			},
+			{
+				"name": "srl_timestamp",
+				"type": "mwtimestamp",
+				"options": { "notnull": true }
+			},
+			{
+				"name": "srl_data",
+				"type": "blob",
+				"options": { "notnull": false, "length": 65535 }
+			}
+		],
+		"indexes": [
+			{
+				"name": "srl_review",
+				"columns": [ "srl_review_id" ],
+				"unique": false
+			},
+			{
+				"name": "srl_actor",
+				"columns": [ "srl_actor_id" ],
+				"unique": false
+			},
+			{
+				"name": "srl_timestamp",
+				"columns": [ "srl_timestamp" ],
+				"unique": false
+			}
+		],
+		"pk": [ "srl_id" ]
+	},
+	{
+		"name": "starlight_page_stats",
+		"comment": "Cached aggregate review statistics per page",
+		"columns": [
+			{
+				"name": "sps_page_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "sps_review_count",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sps_avg_rating",
+				"type": "decimal",
+				"options": { "notnull": true, "default": 0, "precision": 3, "scale": 2 }
+			},
+			{
+				"name": "sps_rating_1",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sps_rating_2",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sps_rating_3",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sps_rating_4",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sps_rating_5",
+				"type": "integer",
+				"options": { "notnull": true, "default": 0, "unsigned": true }
+			},
+			{
+				"name": "sps_updated",
+				"type": "mwtimestamp",
+				"options": { "notnull": true }
+			}
+		],
+		"indexes": [],
+		"pk": [ "sps_page_id" ]
+	},
+	{
+		"name": "starlight_verification",
+		"comment": "Stores user verification votes on reviews",
+		"columns": [
+			{
+				"name": "sv_id",
+				"type": "integer",
+				"options": { "autoincrement": true, "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "sv_review_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "sv_user_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "sv_verdict",
+				"type": "string",
+				"options": { "length": 16, "notnull": true }
+			},
+			{
+				"name": "sv_timestamp",
+				"type": "mwtimestamp",
+				"options": { "notnull": true }
+			},
+			{
+				"name": "sv_weight",
+				"type": "decimal",
+				"options": { "notnull": true, "default": 1, "precision": 3, "scale": 2 }
+			}
+		],
+		"indexes": [
+			{
+				"name": "sv_review_user",
+				"columns": [ "sv_review_id", "sv_user_id" ],
+				"unique": true
+			},
+			{
+				"name": "sv_review_verdict",
+				"columns": [ "sv_review_id", "sv_verdict" ],
+				"unique": false
+			},
+			{
+				"name": "sv_user_time",
+				"columns": [ "sv_user_id", "sv_timestamp" ],
+				"unique": false
+			}
+		],
+		"pk": [ "sv_id" ]
+	},
+	{
+		"name": "starlight_outdated",
+		"comment": "Tracks users who flagged reviews as outdated",
+		"columns": [
+			{
+				"name": "so_id",
+				"type": "integer",
+				"options": { "autoincrement": true, "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "so_review_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "so_user_id",
+				"type": "integer",
+				"options": { "notnull": true, "unsigned": true }
+			},
+			{
+				"name": "so_timestamp",
+				"type": "mwtimestamp",
+				"options": { "notnull": true }
+			}
+		],
+		"indexes": [
+			{
+				"name": "so_review_user",
+				"columns": [ "so_review_id", "so_user_id" ],
+				"unique": true
+			},
+			{
+				"name": "so_review",
+				"columns": [ "so_review_id" ],
+				"unique": false
+			}
+		],
+		"pk": [ "so_id" ]
+	}
+]
