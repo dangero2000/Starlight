@@ -34,6 +34,11 @@ class ApiReviewDelete extends ApiBase {
 		$user = $this->getUser();
 		$params = $this->extractRequestParams();
 
+		// Check rate limit before any processing
+		if ( $user->pingLimiter( 'starlight-delete' ) ) {
+			$this->dieWithError( 'apierror-ratelimited' );
+		}
+
 		// Get the review
 		$review = $this->reviewStore->getReview( $params['reviewid'] );
 		if ( !$review ) {
@@ -54,6 +59,8 @@ class ApiReviewDelete extends ApiBase {
 		}
 
 		if ( !$canDelete ) {
+			// Increment failure rate limiter to prevent brute-force token guessing
+			$user->pingLimiter( 'starlight-edit-fail' );
 			$this->dieWithError( 'starlight-error-cannot-delete' );
 		}
 

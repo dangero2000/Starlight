@@ -39,6 +39,11 @@ class ApiReviewEdit extends ApiBase {
 		$user = $this->getUser();
 		$params = $this->extractRequestParams();
 
+		// Check rate limit before any processing
+		if ( $user->pingLimiter( 'starlight-edit' ) ) {
+			$this->dieWithError( 'apierror-ratelimited' );
+		}
+
 		// Get the review
 		$review = $this->reviewStore->getReview( $params['reviewid'] );
 		if ( !$review ) {
@@ -47,6 +52,9 @@ class ApiReviewEdit extends ApiBase {
 
 		// Check permission to edit
 		if ( !$this->sessionManager->canEditReview( $review, $user ) ) {
+			// Increment failure rate limiter to prevent brute-force token guessing
+			$user->pingLimiter( 'starlight-edit-fail' );
+
 			// Check if user has moderate permission as fallback
 			if ( !$this->getAuthority()->isAllowed( 'starlight-moderate' ) ) {
 				$this->dieWithError( 'starlight-error-cannot-edit' );

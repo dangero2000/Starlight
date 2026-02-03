@@ -147,47 +147,105 @@ class ReviewValidator {
 	/**
 	 * Process links in review text according to policy.
 	 *
+	 * Always strips dangerous URL schemes (javascript:, data:, vbscript:, file:)
+	 * regardless of policy to prevent XSS attacks.
+	 *
 	 * @param string $text
 	 * @return string
 	 */
 	public function processLinks( string $text ): string {
 		$policy = $this->config->get( 'StarlightLinkPolicy' );
 
+		// Pattern to match dangerous URL schemes that could be used for XSS
+		// These are always stripped regardless of policy
+		$dangerousSchemePattern = '/\b(?:javascript|data|vbscript|file):[^\s<>\[\]"]*/i';
+
+		// Standard URL pattern for http/https/ftp
+		$urlPattern = '/\b(?:https?|ftp):\/\/[^\s<>\[\]]+/i';
+
 		switch ( $policy ) {
 			case 'allow':
-				return $text;
+				// Even in 'allow' mode, always strip dangerous script schemes
+				return preg_replace(
+					$dangerousSchemePattern,
+					'[dangerous content removed]',
+					$text
+				);
 
 			case 'strip':
-				// Remove all URLs
+				// Remove dangerous schemes first
+				$text = preg_replace(
+					$dangerousSchemePattern,
+					'[link removed]',
+					$text
+				);
+				// Then remove standard URLs
 				return preg_replace(
-					'/https?:\/\/[^\s<>\[\]]+/',
+					$urlPattern,
 					'[link removed]',
 					$text
 				);
 
 			case 'internal-only':
-				// This would require knowing the wiki's domain
-				// For now, strip all external links
+				// Strip dangerous schemes first
+				$text = preg_replace(
+					$dangerousSchemePattern,
+					'[external link removed]',
+					$text
+				);
+				// Then strip external http/https/ftp links
 				return preg_replace(
-					'/https?:\/\/[^\s<>\[\]]+/',
+					$urlPattern,
 					'[external link removed]',
 					$text
 				);
 
 			default:
-				return $text;
+				// Always sanitize dangerous schemes even with unknown policy
+				return preg_replace(
+					$dangerousSchemePattern,
+					'[dangerous content removed]',
+					$text
+				);
 		}
 	}
 
 	/**
 	 * Sanitize text for display.
 	 *
+	 * Removes control characters, bidirectional override characters, and
+	 * zero-width characters that could be used for spoofing or fingerprinting.
+	 * Normalizes Unicode to NFC form for consistent storage and comparison.
+	 *
 	 * @param string $text
 	 * @return string
 	 */
 	public function sanitize( string $text ): string {
-		// Basic sanitization - MediaWiki's output escaping handles XSS
 		$text = trim( $text );
+
+		// Remove control characters except newlines (\n = \x0A) and tabs (\t = \x09)
+		// Control characters: \x00-\x08, \x0B, \x0C, \x0E-\x1F, \x7F
+		// Also remove Unicode control characters in C1 range: \x80-\x9F
+		$text = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F\x{0080}-\x{009F}]/u', '', $text );
+
+		// Remove Unicode bidirectional override characters that can be used for spoofing
+		// LRE (U+202A), RLE (U+202B), PDF (U+202C), LRO (U+202D), RLO (U+202E)
+		// LRI (U+2066), RLI (U+2067), FSI (U+2068), PDI (U+2069)
+		$text = preg_replace( '/[\x{202A}-\x{202E}\x{2066}-\x{2069}]/u', '', $text );
+
+		// Remove zero-width characters that can be used for fingerprinting or spoofing
+		// Zero-width space (U+200B), zero-width non-joiner (U+200C),
+		// zero-width joiner (U+200D), word joiner (U+2060), BOM (U+FEFF)
+		$text = preg_replace( '/[\x{200B}-\x{200D}\x{FEFF}\x{2060}]/u', '', $text );
+
+		// Normalize Unicode to NFC form for consistent storage and comparison
+		// This helps prevent homograph attacks using different Unicode representations
+		if ( class_exists( 'Normalizer' ) ) {
+			$normalized = \Normalizer::normalize( $text, \Normalizer::FORM_C );
+			if ( $normalized !== false ) {
+				$text = $normalized;
+			}
+		}
 
 		// Normalize line endings
 		$text = str_replace( [ "\r\n", "\r" ], "\n", $text );

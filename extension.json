@@ -11,7 +11,8 @@
 	"requires": {
 		"MediaWiki": ">= 1.41.0",
 		"platform": {
-			"php": ">= 8.1"
+			"php": ">= 8.1",
+			"ext-intl": "*"
 		}
 	},
 
@@ -150,6 +151,26 @@
 			"starlight-verify": true,
 			"starlight-moderate": true,
 			"starlight-viewdeleted": true
+		}
+	},
+
+	"RateLimits": {
+		"starlight-edit": {
+			"&can-bypass": false,
+			"user": [ 10, 60 ],
+			"newbie": [ 5, 60 ],
+			"ip": [ 5, 60 ]
+		},
+		"starlight-delete": {
+			"&can-bypass": false,
+			"user": [ 10, 60 ],
+			"newbie": [ 5, 60 ],
+			"ip": [ 5, 60 ]
+		},
+		"starlight-edit-fail": {
+			"&can-bypass": false,
+			"user": [ 5, 300 ],
+			"ip": [ 5, 300 ]
 		}
 	},
 
@@ -408,6 +429,16 @@
 			"description": "Hide vote counts until review is this many hours old (0 = show immediately)",
 			"value": 24,
 			"public": true
+		},
+		"StarlightSecretKey": {
+			"description": "Secret key for IP hashing and other security functions. Falls back to $wgSecretKey if not set.",
+			"value": null,
+			"public": false
+		},
+		"StarlightCookieSecure": {
+			"description": "Always set Secure flag on cookies (recommended). Set to false only if your wiki doesn't support HTTPS.",
+			"value": true,
+			"public": false
 		}
 	},
 

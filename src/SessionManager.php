@@ -9,6 +9,7 @@
 
 namespace MediaWiki\Extension\Starlight;
 
+use MediaWiki\Config\Config;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Request\WebRequest;
 
@@ -19,6 +20,22 @@ class SessionManager {
 	private const TOKEN_LENGTH = 32;
 	private const COOKIE_EXPIRY = 2592000; // 30 days in seconds
 
+	private Config $config;
+	private string $secret;
+
+	public function __construct( Config $config ) {
+		$this->config = $config;
+
+		// Derive secret from extension-specific key or fall back to global SecretKey
+		$extensionKey = $this->config->get( 'StarlightSecretKey' );
+		if ( $extensionKey !== null ) {
+			$this->secret = $extensionKey;
+		} else {
+			$globalSecret = $this->config->get( 'SecretKey' );
+			$this->secret = hash( 'sha256', $globalSecret . 'Starlight' );
+		}
+	}
+
 	/**
 	 * Get the current web request.
 	 *
@@ -26,6 +43,25 @@ class SessionManager {
 	 */
 	private function getRequest(): WebRequest {
 		return RequestContext::getMain()->getRequest();
+	}
+
+	/**
+	 * Get cookie options with proper security settings.
+	 *
+	 * @return array
+	 */
+	private function getCookieOptions(): array {
+		$request = $this->getRequest();
+
+		// Always use secure cookies if configured or if current request is HTTPS
+		$forceSecure = $this->config->get( 'StarlightCookieSecure' );
+		$isHttps = $request->getProtocol() === 'https';
+
+		return [
+			'httpOnly' => true,
+			'secure' => $forceSecure || $isHttps,
+			'sameSite' => 'Lax',
+		];
 	}
 
 	/**
@@ -45,16 +81,12 @@ class SessionManager {
 		// Generate new token
 		$token = bin2hex( random_bytes( self::TOKEN_LENGTH ) );
 
-		// Set cookie
+		// Set cookie with secure options
 		$request->response()->setCookie(
 			self::COOKIE_SESSION,
 			$token,
 			time() + self::COOKIE_EXPIRY,
-			[
-				'httpOnly' => true,
-				'secure' => $request->getProtocol() === 'https',
-				'sameSite' => 'Lax',
-			]
+			$this->getCookieOptions()
 		);
 
 		return $token;
@@ -105,9 +137,10 @@ class SessionManager {
 		}
 
 		// Anonymous users can edit if they have the matching session token
+		// Use hash_equals for timing-safe comparison to prevent timing attacks
 		if ( !$user->isRegistered() ) {
 			$currentToken = $this->getCurrentToken();
-			return $currentToken && $currentToken === $review['sr_session_token'];
+			return $currentToken && hash_equals( $review['sr_session_token'], $currentToken );
 		}
 
 		return false;
@@ -144,11 +177,7 @@ class SessionManager {
 			self::COOKIE_NAME,
 			$name,
 			time() + self::COOKIE_EXPIRY,
-			[
-				'httpOnly' => true,
-				'secure' => $request->getProtocol() === 'https',
-				'sameSite' => 'Lax',
-			]
+			$this->getCookieOptions()
 		);
 	}
 
@@ -169,14 +198,15 @@ class SessionManager {
 	}
 
 	/**
-	 * Hash an IP address for storage.
+	 * Hash an IP address for storage using HMAC.
+	 *
+	 * Uses HMAC with a secret key derived from $wgSecretKey to prevent
+	 * rainbow table attacks even if the algorithm is known.
 	 *
 	 * @param string $ip
 	 * @return string
 	 */
 	public function hashIP( string $ip ): string {
-		// Use a one-way hash with a salt
-		// The salt should ideally come from configuration
-		return hash( 'sha256', $ip . 'starlight_salt' );
+		return hash_hmac( 'sha256', $ip, $this->secret );
 	}
 }

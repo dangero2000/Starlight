@@ -37,7 +37,9 @@ return [
 	},
 
 	'Starlight.SessionManager' => static function ( MediaWikiServices $services ): SessionManager {
-		return new SessionManager();
+		return new SessionManager(
+			$services->getMainConfig()
+		);
 	},
 
 	'Starlight.NameGenerator' => static function ( MediaWikiServices $services ): NameGenerator {
