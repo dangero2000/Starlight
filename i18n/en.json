@@ -88,6 +88,8 @@
 	"starlight-error-cannot-verify": "You cannot verify this review",
 	"starlight-error-verify-failed": "Failed to submit verification vote",
 	"starlight-error-cannot-flag-own": "You cannot flag your own review",
+	"starlight-error-already-flagged": "You have already flagged this review",
+	"starlight-error-flag-failed": "Failed to submit flag. Please try again.",
 	"starlight-error-loading": "Failed to load reviews. Please try again.",
 	"starlight-error-submit-failed": "Failed to submit review. Please try again.",
 

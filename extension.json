@@ -86,7 +86,8 @@
 		"starlightflag": {
 			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewFlag",
 			"services": [
-				"Starlight.ReviewStore"
+				"Starlight.ReviewStore",
+				"Starlight.SecurityLogger"
 			]
 		}
 	},
@@ -171,6 +172,12 @@
 			"&can-bypass": false,
 			"user": [ 5, 300 ],
 			"ip": [ 5, 300 ]
+		},
+		"starlight-flag": {
+			"&can-bypass": false,
+			"user": [ 10, 3600 ],
+			"newbie": [ 5, 3600 ],
+			"ip": [ 5, 3600 ]
 		}
 	},
 

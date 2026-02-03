@@ -455,4 +455,128 @@ class ReviewStore {
 		// Implementation depends on ReviewSorter
 		return 0;
 	}
+
+	/**
+	 * Check if a user has already flagged a review.
+	 *
+	 * @param int $reviewId
+	 * @param int $userId User ID (0 for anonymous)
+	 * @param string $ip IP address for anonymous users
+	 * @return bool
+	 */
+	public function hasUserFlagged( int $reviewId, int $userId, string $ip ): bool {
+		$dbr = $this->dbProvider->getReplicaDatabase();
+
+		$queryBuilder = $dbr->newSelectQueryBuilder()
+			->select( 'COUNT(*)' )
+			->from( 'starlight_review_log' )
+			->where( [
+				'srl_review_id' => $reviewId,
+				'srl_action' => 'flag',
+			] )
+			->caller( __METHOD__ );
+
+		if ( $userId > 0 ) {
+			$queryBuilder->andWhere( [ 'srl_actor_id' => $userId ] );
+		} else {
+			// For anonymous users, check by IP in the data JSON
+			// This is less efficient but necessary for anonymous flag tracking
+			$queryBuilder->andWhere(
+				$dbr->expr( 'srl_data', IDatabase::LIKE,
+					new \Wikimedia\Rdbms\LikeValue(
+						$dbr->anyString(),
+						'"ip":"' . $ip . '"',
+						$dbr->anyString()
+					)
+				)
+			);
+		}
+
+		return (int)$queryBuilder->fetchField() > 0;
+	}
+
+	/**
+	 * Add a flag to a review.
+	 *
+	 * @param int $reviewId
+	 * @param int $userId User ID (0 for anonymous)
+	 * @param string $reason Flag reason
+	 * @param string $comment Optional comment
+	 * @param string $ip IP address
+	 * @return bool
+	 */
+	public function addFlag(
+		int $reviewId,
+		int $userId,
+		string $reason,
+		string $comment,
+		string $ip
+	): bool {
+		$dbw = $this->dbProvider->getPrimaryDatabase();
+
+		// Log the flag
+		$this->logAction( $reviewId, $userId, 'flag', $reason, [
+			'comment' => $comment,
+			'ip' => $ip,
+		] );
+
+		// Increment the flag counter on the review
+		$dbw->newUpdateQueryBuilder()
+			->update( 'starlight_review' )
+			->set( [ 'sr_flags = sr_flags + 1' ] )
+			->where( [ 'sr_id' => $reviewId ] )
+			->caller( __METHOD__ )
+			->execute();
+
+		// If this was an 'outdated' flag, also increment that counter
+		if ( $reason === 'outdated' ) {
+			$dbw->newUpdateQueryBuilder()
+				->update( 'starlight_review' )
+				->set( [ 'sr_outdated_count = sr_outdated_count + 1' ] )
+				->where( [ 'sr_id' => $reviewId ] )
+				->caller( __METHOD__ )
+				->execute();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get the number of flags a user has submitted recently.
+	 *
+	 * @param int $userId User ID (0 for anonymous)
+	 * @param string $ip IP address for anonymous users
+	 * @return int
+	 */
+	public function getRecentFlagCount( int $userId, string $ip ): int {
+		$dbr = $this->dbProvider->getReplicaDatabase();
+
+		$hourAgo = wfTimestamp( TS_MW, time() - 3600 );
+
+		$queryBuilder = $dbr->newSelectQueryBuilder()
+			->select( 'COUNT(*)' )
+			->from( 'starlight_review_log' )
+			->where( [
+				'srl_action' => 'flag',
+			] )
+			->andWhere( $dbr->expr( 'srl_timestamp', '>=', $hourAgo ) )
+			->caller( __METHOD__ );
+
+		if ( $userId > 0 ) {
+			$queryBuilder->andWhere( [ 'srl_actor_id' => $userId ] );
+		} else {
+			// For anonymous users, check by IP in the data JSON
+			$queryBuilder->andWhere(
+				$dbr->expr( 'srl_data', IDatabase::LIKE,
+					new \Wikimedia\Rdbms\LikeValue(
+						$dbr->anyString(),
+						'"ip":"' . $ip . '"',
+						$dbr->anyString()
+					)
+				)
+			);
+		}
+
+		return (int)$queryBuilder->fetchField();
+	}
 }

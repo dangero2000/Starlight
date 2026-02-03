@@ -77,15 +77,24 @@ class NameGenerator {
 	}
 
 	/**
-	 * Generate a random adjective-noun name.
+	 * Generate a random adjective-noun name with numeric suffix.
+	 *
+	 * Uses cryptographically secure random selection and adds a numeric
+	 * suffix to greatly increase the number of possible combinations
+	 * (115 adjectives × 125 nouns × 1000 numbers = 14+ million combinations).
 	 *
 	 * @return string
 	 */
 	public function generateRandomName(): string {
-		$adjective = self::ADJECTIVES[ array_rand( self::ADJECTIVES ) ];
-		$noun = self::NOUNS[ array_rand( self::NOUNS ) ];
+		// Use cryptographically secure random selection
+		$adjectiveIndex = random_int( 0, count( self::ADJECTIVES ) - 1 );
+		$nounIndex = random_int( 0, count( self::NOUNS ) - 1 );
+		$number = random_int( 1, 999 );
 
-		return $adjective . ' ' . $noun;
+		$adjective = self::ADJECTIVES[ $adjectiveIndex ];
+		$noun = self::NOUNS[ $nounIndex ];
+
+		return $adjective . ' ' . $noun . ' ' . $number;
 	}
 
 	/**

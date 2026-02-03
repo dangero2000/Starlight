@@ -12,8 +12,10 @@ use MediaWiki\Extension\Starlight\ReviewFormatter;
 use MediaWiki\Extension\Starlight\ReviewSorter;
 use MediaWiki\Extension\Starlight\ReviewStore;
 use MediaWiki\Extension\Starlight\ReviewValidator;
+use MediaWiki\Extension\Starlight\SecurityLogger;
 use MediaWiki\Extension\Starlight\SessionManager;
 use MediaWiki\Extension\Starlight\VerificationStore;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 
 return [
@@ -64,6 +66,12 @@ return [
 			$services->getService( 'Starlight.SessionManager' ),
 			$services->getService( 'Starlight.NameGenerator' ),
 			$services->getMainConfig()
+		);
+	},
+
+	'Starlight.SecurityLogger' => static function ( MediaWikiServices $services ): SecurityLogger {
+		return new SecurityLogger(
+			LoggerFactory::getInstance( 'Starlight' )
 		);
 	},
 ];
