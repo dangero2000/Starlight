@@ -10,20 +10,24 @@
 namespace MediaWiki\Extension\Starlight\Api;
 
 use ApiBase;
+use MediaWiki\Extension\Starlight\ReviewStore;
 use MediaWiki\Extension\Starlight\VerificationStore;
 use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiReviewVerify extends ApiBase {
 
 	private VerificationStore $verificationStore;
+	private ReviewStore $reviewStore;
 
 	public function __construct(
 		$mainModule,
 		$moduleName,
-		VerificationStore $verificationStore
+		VerificationStore $verificationStore,
+		ReviewStore $reviewStore
 	) {
 		parent::__construct( $mainModule, $moduleName );
 		$this->verificationStore = $verificationStore;
+		$this->reviewStore = $reviewStore;
 	}
 
 	public function execute() {
@@ -54,10 +58,19 @@ class ApiReviewVerify extends ApiBase {
 			$this->dieWithError( 'starlight-error-verify-failed' );
 		}
 
+		// Get updated review data and verification stats
+		$review = $this->reviewStore->getReview( $params['reviewid'] );
+		$stats = $review ? $this->verificationStore->getVerificationStats( $review ) : null;
+
 		$this->getResult()->addValue( null, $this->getModuleName(), [
 			'success' => true,
 			'reviewid' => $params['reviewid'],
 			'verdict' => $params['verdict'],
+			'verification' => $stats ? [
+				'status' => $stats['status'],
+				'total' => $stats['total'],
+				'score' => $stats['score'],
+			] : null,
 		] );
 	}
 

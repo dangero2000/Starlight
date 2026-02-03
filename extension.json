@@ -69,7 +69,8 @@
 		"starlightverify": {
 			"class": "MediaWiki\\Extension\\Starlight\\Api\\ApiReviewVerify",
 			"services": [
-				"Starlight.VerificationStore"
+				"Starlight.VerificationStore",
+				"Starlight.ReviewStore"
 			]
 		},
 		"starlightlist": {
@@ -204,7 +205,15 @@
 				"mediawiki.api"
 			],
 			"messages": [
-				"starlight-error-verify-failed"
+				"starlight-error-verify-failed",
+				"starlight-verify-status-text",
+				"starlight-verify-unverified",
+				"starlight-verify-pending",
+				"starlight-verify-accurate",
+				"starlight-verify-mostly-accurate",
+				"starlight-verify-mixed",
+				"starlight-verify-mostly-inaccurate",
+				"starlight-verify-inaccurate"
 			]
 		}
 	},

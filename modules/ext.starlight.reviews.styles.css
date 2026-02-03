@@ -231,6 +231,11 @@
 	color: #54595d;
 }
 
+.starlight-verify-status-pending {
+	background: #eaf3ff;
+	color: #36c;
+}
+
 .starlight-verify-status-accurate {
 	background: #d5ffd5;
 	color: #14866d;

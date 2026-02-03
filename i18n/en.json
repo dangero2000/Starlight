@@ -45,6 +45,7 @@
 	"starlight-stale-tooltip": "This review is $1 {{PLURAL:$1|day|days}} old. Information may be outdated.",
 
 	"starlight-verify-unverified": "Unverified",
+	"starlight-verify-pending": "Verification pending",
 	"starlight-verify-accurate": "Accurate",
 	"starlight-verify-mostly-accurate": "Mostly accurate",
 	"starlight-verify-mixed": "Mixed",

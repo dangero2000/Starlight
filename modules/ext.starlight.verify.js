@@ -30,6 +30,7 @@
 		submitVote: function ( reviewId, verdict, $btn ) {
 			var self = this;
 			var $container = $btn.closest( '.starlight-verify-buttons' );
+			var $review = $btn.closest( '.starlight-review' );
 
 			// Disable buttons during submission
 			$container.find( '.starlight-verify-btn' ).prop( 'disabled', true );
@@ -42,10 +43,17 @@
 				$container.find( '.starlight-verify-btn' ).prop( 'disabled', false );
 
 				if ( response.starlightverify && response.starlightverify.success ) {
-					// Update button states
+					// Update button states and aria-pressed
 					$container.find( '.starlight-verify-btn' )
-						.removeClass( 'starlight-verify-btn-selected' );
-					$btn.addClass( 'starlight-verify-btn-selected' );
+						.removeClass( 'starlight-verify-btn-selected' )
+						.attr( 'aria-pressed', 'false' );
+					$btn.addClass( 'starlight-verify-btn-selected' )
+						.attr( 'aria-pressed', 'true' );
+
+					// Update verification status text if stats returned
+					if ( response.starlightverify.verification ) {
+						self.updateStatusDisplay( $review, response.starlightverify.verification );
+					}
 
 					// Show brief confirmation
 					self.showVoteConfirmation( $container, verdict );
@@ -55,6 +63,23 @@
 				var msg = result.error && result.error.info || mw.msg( 'starlight-error-verify-failed' );
 				mw.notify( msg, { type: 'error' } );
 			} );
+		},
+
+		updateStatusDisplay: function ( $review, verification ) {
+			var $statusElement = $review.find( '.starlight-verify-status' );
+			if ( $statusElement.length ) {
+				// Get the status message
+				var statusKey = 'starlight-verify-' + verification.status;
+				var statusText = mw.msg( statusKey );
+				var fullText = mw.msg( 'starlight-verify-status-text', statusText );
+
+				$statusElement.text( fullText );
+
+				// Update status class for styling
+				$statusElement
+					.removeClass( 'starlight-verify-status-unverified starlight-verify-status-pending starlight-verify-status-accurate starlight-verify-status-mostly-accurate starlight-verify-status-mixed starlight-verify-status-mostly-inaccurate starlight-verify-status-inaccurate' )
+					.addClass( 'starlight-verify-status-' + verification.status );
+			}
 		},
 
 		showVoteConfirmation: function ( $container, verdict ) {

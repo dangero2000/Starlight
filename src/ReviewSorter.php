@@ -160,10 +160,16 @@ class ReviewSorter {
 	 * @return string Status key
 	 */
 	public function getVerificationStatus( float $score, int $totalVotes ): string {
+		// No votes at all
+		if ( $totalVotes === 0 ) {
+			return 'unverified';
+		}
+
 		$minVotes = $this->config->get( 'StarlightVerificationHideCountsUntilThreshold' );
 
+		// Has votes but below threshold - show "pending" status
 		if ( $totalVotes < $minVotes ) {
-			return 'unverified';
+			return 'pending';
 		}
 
 		if ( $score >= 1.5 ) {

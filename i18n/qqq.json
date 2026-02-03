@@ -34,7 +34,8 @@
 	"starlight-stale-badge": "Badge shown on older reviews",
 	"starlight-stale-tooltip": "Tooltip for stale badge. Parameters:\n* $1 - age in days",
 
-	"starlight-verify-unverified": "Status for reviews without enough verification votes",
+	"starlight-verify-unverified": "Status for reviews with no verification votes",
+	"starlight-verify-pending": "Status for reviews that have verification votes but not enough to determine accuracy",
 	"starlight-verify-accurate": "Status for highly verified accurate reviews",
 	"starlight-verify-mostly-accurate": "Status for mostly accurate reviews",
 	"starlight-verify-mixed": "Status for reviews with mixed verification",
